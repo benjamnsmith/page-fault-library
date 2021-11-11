@@ -4,6 +4,7 @@
 #include <linux/perf_event.h>
 #include <linux/hw_breakpoint.h>
 #include <sys/ioctl.h>
+#include <sys/syscall.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -51,4 +52,27 @@ int init(){
         return -1;
     }
     return 0;
+}
+
+int main(int argc, char** argv){
+
+  int x[64][64];
+
+  int i, j = 0;
+
+  init();
+
+  begin_recording();
+
+  for(i = 0; i < 64; i++){
+    for(j = 0; j < 64; j++){
+      x[i][j] = 0;
+    }
+  }
+
+  int pf = stop_recording();
+
+  printf("Page-faults: %d\n", pf);
+
+  return 0;
 }
